@@ -1,0 +1,9 @@
+.pytest_cache/
+allure_results/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.idea/
+.vscode/
+.DS_Store
