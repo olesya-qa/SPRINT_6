@@ -17,6 +17,7 @@ RENT_DATE_INPUT = (
     By.XPATH,
     "//input[contains(@placeholder,'Когда привезти')]",
 )
+RENT_DATEPICKER = (By.CLASS_NAME, 'react-datepicker')
 RENT_PERIOD_DROPDOWN = (
     By.XPATH,
     "//div[contains(@class,'Dropdown-root')]",

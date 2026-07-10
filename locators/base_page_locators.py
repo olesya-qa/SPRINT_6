@@ -14,6 +14,8 @@ ORDER_BUTTON_FOOTER = (
     "//div[contains(@class,'Home_FinishButton')]//button[text()='Заказать']",
 )
 
+FAQ_SECTION = (By.CSS_SELECTOR, '.Home_FAQ__3uVm4')
+
 FAQ_BUTTONS = (
     By.CSS_SELECTOR,
     "div.accordion__button[id^='accordion__heading-']",
