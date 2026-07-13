@@ -59,32 +59,24 @@ class OrderPage(BasePage):
 
     @allure.step('Выбрать станцию метро: {metro}')
     def _select_metro(self, metro):
-        metro_input = self.wait_for_visible(ORDER_FIELD_METRO)
-        metro_input.clear()
+        self.wait_for_visible(ORDER_FIELD_METRO)
+        self.clear_locator(ORDER_FIELD_METRO)
         prefix = metro[:3]
-        metro_input.send_keys(prefix)
+        self.send_keys_to_locator(ORDER_FIELD_METRO, prefix)
 
-        self.wait_until(
-            lambda driver: (
-                driver.find_element(*ORDER_FIELD_METRO).get_attribute('value') or ''
-            ).startswith(prefix)
-        )
+        self.wait_for_attribute_starts_with(ORDER_FIELD_METRO, 'value', prefix)
 
         for _ in range(10):
-            metro_input = self.find_element(ORDER_FIELD_METRO)
-            metro_input.send_keys(Keys.ARROW_DOWN)
-            current_value = metro_input.get_attribute('value') or ''
+            self.send_keys_to_locator(ORDER_FIELD_METRO, Keys.ARROW_DOWN)
+            current_value = self.get_attribute(ORDER_FIELD_METRO, 'value')
             if current_value.strip().lower() == metro.strip().lower():
-                metro_input.send_keys(Keys.ENTER)
+                self.send_keys_to_locator(ORDER_FIELD_METRO, Keys.ENTER)
                 break
         else:
-            metro_input = self.find_element(ORDER_FIELD_METRO)
-            metro_input.send_keys(Keys.ENTER)
+            self.send_keys_to_locator(ORDER_FIELD_METRO, Keys.ENTER)
 
-        self.wait_until(
-            lambda driver: (
-                driver.find_element(*ORDER_FIELD_METRO).get_attribute('value') or ''
-            ).strip().lower() == metro.strip().lower()
+        self.wait_for_attribute_equals(
+            ORDER_FIELD_METRO, 'value', metro, normalize=True
         )
         self.wait_for_visible(ORDER_FIELD_PHONE)
 

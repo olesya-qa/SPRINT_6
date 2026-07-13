@@ -48,6 +48,32 @@ class BasePage:
     def wait_until(self, condition):
         return WebDriverWait(self.driver, self.timeout).until(condition)
 
+    def get_attribute(self, locator, attribute):
+        return self.find_element(locator).get_attribute(attribute) or ''
+
+    def wait_for_attribute_starts_with(self, locator, attribute, prefix):
+        self.wait_until(
+            lambda _: self.get_attribute(locator, attribute).startswith(prefix)
+        )
+
+    def wait_for_attribute_equals(self, locator, attribute, expected, normalize=False):
+        if normalize:
+            expected = expected.strip().lower()
+
+        def condition(_):
+            value = self.get_attribute(locator, attribute)
+            if normalize:
+                value = value.strip().lower()
+            return value == expected
+
+        self.wait_until(condition)
+
+    def send_keys_to_locator(self, locator, *keys):
+        self.find_element(locator).send_keys(*keys)
+
+    def clear_locator(self, locator):
+        self.find_element(locator).clear()
+
     def click(self, locator):
         element = self.wait_for_clickable(locator)
         self.scroll_to_element(element)
@@ -79,8 +105,14 @@ class BasePage:
         self.execute_script('arguments[0].click();', element)
 
     def wait_for_new_window_and_switch(self):
-        self.wait_until(lambda driver: len(driver.window_handles) > 1)
-        self.driver.switch_to.window(self.driver.window_handles[-1])
+        self.wait_until(lambda _: len(self.get_window_handles()) > 1)
+        self.switch_to_last_window()
 
     def wait_for_url_not_blank(self):
-        self.wait_until(lambda driver: driver.current_url != 'about:blank')
+        self.wait_until(lambda _: self.get_current_url() != 'about:blank')
+
+    def get_window_handles(self):
+        return self.driver.window_handles
+
+    def switch_to_last_window(self):
+        self.driver.switch_to.window(self.get_window_handles()[-1])
